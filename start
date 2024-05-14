@@ -1,6 +1,3 @@
 #!/usr/bin/sh
-mkdir -p build
-cd build
-cmake ..
-cmake --build .
-./OpenGL_Learn
+make all
+./build/OpenGL_Learn
