@@ -10,6 +10,8 @@
 #include <fstream>
 #include <streambuf>
 
+#include "../stb/stb_image.h"
+
 #define TT_IMGUI_THEME_DARK 0
 #define TT_IMGUI_THEME_LIGHT 1
 #define TT_IMGUI_THEME_CLASSIC 2
@@ -59,5 +61,29 @@ namespace TT {
 	private:
 		int id;
 		std::vector<Shader> shaders;
+	};
+	class FrameBuffer {
+	public:
+		FrameBuffer(int width, int height);
+
+		void load() const;
+		void clear() const;
+
+		static void unload();
+
+		int getTexture() const;
+		int getWidth() const;
+		int getHeight() const;
+	private:
+		GLuint fboId, rboId, textureId;
+		int width, height;
+	};
+	class Texture {
+	public:
+		static int loadFromFile(const char* location, GLint filter);
+		
+		static void load(GLuint texture, int id);
+		static void unload();
+		static void clear(GLuint texture);
 	};
 }

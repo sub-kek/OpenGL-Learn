@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE ENGINE_SOURCES "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE ENGINE_SOURCES "src/*.cpp" "src/*.c" "src/*.h" "src/*.hpp")
 
 add_executable(${PROJECT_NAME} ${ENGINE_SOURCES})
 

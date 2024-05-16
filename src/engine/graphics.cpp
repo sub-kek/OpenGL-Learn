@@ -169,3 +169,92 @@ void TT::ShaderProgram::setUniform(const char* id, glm::vec3 value) const {
 void TT::ShaderProgram::setUniform(const char* id, glm::vec4 value) const {
 	glUniform4f(glGetUniformLocation(this->id, id), value.x, value.y, value.z, value.w);
 }
+
+void TT::FrameBuffer::unload() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, (int)Window::getSize().x, (int)Window::getSize().y);
+}
+
+TT::FrameBuffer::FrameBuffer(int width, int height) {
+	this->width = width;
+	this->height = height;
+
+	glGenFramebuffers(1, &fboId);
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+
+	unload();
+}
+
+void TT::FrameBuffer::load() const {
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+	
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+void TT::FrameBuffer::clear() const {
+	glDeleteFramebuffers(1, &fboId);
+	glDeleteTextures(1, &textureId);
+}
+
+int TT::FrameBuffer::getTexture() const {
+	return textureId;
+}
+int TT::FrameBuffer::getWidth() const {
+	return width;
+}
+int TT::FrameBuffer::getHeight() const {
+	return height;
+}
+
+int TT::Texture::loadFromFile(const char* location, GLint filter) {
+	stbi_set_flip_vertically_on_load(true);
+
+	int width, height, channels;
+	unsigned char* image = stbi_load(location, &width, &height, &channels, 0);
+
+	if (!image) std::cerr << "Could not open image: \"" << location << '\"';
+
+	GLuint textureId;
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	GLint format = GL_RGBA;
+	if (channels == 3) format = GL_RGB;
+	if (channels == 2) format = GL_RG;
+	if (channels == 1) format = GL_R;
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, image);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	stbi_image_free(image);
+
+	return textureId;
+}
+
+void TT::Texture::load(GLuint texture, int id) {
+	glActiveTexture(GL_TEXTURE0 + id);
+	glBindTexture(GL_TEXTURE_2D, texture);
+}
+void TT::Texture::unload() {
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+void TT::Texture::clear(GLuint texture) {
+	glDeleteTextures(1, &texture);
+}
