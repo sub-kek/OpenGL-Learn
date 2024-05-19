@@ -6,6 +6,9 @@ build:
 	cmake --build ./build
 	chmod -R 777 ./build
 
+run:
+	build/OpenGL_Learn
+
 all:
 	$(MAKE) clean
 	$(MAKE) build

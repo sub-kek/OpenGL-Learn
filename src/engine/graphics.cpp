@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-GLFWwindow* TT::Window::window = NULL;
+GLFWwindow* TT::Window::window = nullptr;
 
 bool TT::Window::create(int width, int height, const char* title, bool resizable, bool vsync) {
 	if (!glfwInit()) {
@@ -65,7 +65,7 @@ glm::vec2 TT::Window::getSize() {
 	return glm::vec2(width, height);
 }
 
-GLFWwindow* TT::Window::getId() {
+GLFWwindow *TT::Window::getWindow() {
 	return window;
 }
 

@@ -12,10 +12,6 @@
 
 #include "../stb/stb_image.h"
 
-#define TT_IMGUI_THEME_DARK 0
-#define TT_IMGUI_THEME_LIGHT 1
-#define TT_IMGUI_THEME_CLASSIC 2
-
 namespace TT {
 	class Window {
 	public:
@@ -28,9 +24,9 @@ namespace TT {
 		static bool isRunning();
 
 		static glm::vec2 getSize();
-		static GLFWwindow* getId();
+		static GLFWwindow *getWindow();
 	private:
-		static GLFWwindow* window;
+		static GLFWwindow *window;
 	};
 	class Shader {
 	public:
