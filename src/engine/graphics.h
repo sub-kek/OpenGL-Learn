@@ -10,7 +10,7 @@
 #include <fstream>
 #include <streambuf>
 
-#include "../stb/stb_image.h"
+#include <stb_image.h>
 
 namespace TT {
 	class Window {
